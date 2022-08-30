@@ -1,7 +1,7 @@
 const input = document.querySelector(".input");
 const result = document.querySelector(".result");
 const clear = document.querySelector(".clear");
-const keys = document.querySelectorAll(".buttons button");
+const keys = document.querySelectorAll(".buttons button ");
 
 let operation = "";
 let answer;
@@ -9,9 +9,28 @@ let decimalAdded = false;
 
 const operators = ["+", "-", "x", "÷"];
 
-function handleKeyPress (e) {
+function handleKeyPress(e) {
   const val = e.target.value;
   const lastChar = operation[operation.length - 1];
+
+  if (val === "AC") {
+    operation = "";
+    answer = "";
+    input.innerHTML = operation;
+    result.innerHTML = answer;
+    return;
+  }
+
+  if (val === "CE") {
+    for (let i = 0; i < operators.length; i++) {
+      if (lastChar === operators[i]) {
+        break;
+      }
+      operation = operation.slice(0, -1);
+    }
+    input.innerHTML = operation;
+    return;
+  }
 
   if (val === "=") {
     return;
@@ -48,7 +67,6 @@ function handleKeyPress (e) {
     input.innerHTML = operation;
     return;
   }
-
 }
 
 function evaluate(e) {
@@ -66,25 +84,23 @@ function evaluate(e) {
   }
 
   try {
-
     if (operation[0] === "0" && operation[1] !== "." && operation.length > 1) {
       operation = operation.slice(1);
     }
 
     const final = operation.replace(/x/g, "*").replace(/÷/g, "/");
-    answer = +(eval(final)).toFixed(5);
+    answer = +eval(final).toFixed(5);
 
     if (val === "=") {
       decimalAdded = false;
       operation = `${answer}`;
       answer = "";
-      input.innerHTML = operation;
-      result.innerHTML = answer;
+      input.innerHTML = answer;
+      result.innerHTML = operation;
       return;
     }
 
     result.innerHTML = answer;
-
   } catch (e) {
     if (val === "=") {
       decimalAdded = false;
@@ -93,28 +109,9 @@ function evaluate(e) {
     }
     console.log(e);
   }
-
 }
 
-// function clearInput(e) {
-//   const val = e.target.value;
-//   if (val === "AC") {
-//     operation = "";
-//     answer = "";
-//     input.innerHTML = operation;
-//     result.innerHTML = answer;
-//     return;
-//   }
-//   if (val === "CE") {
-//     operation = operation.slice(0, -1);
-//     input.innerHTML = operation;
-//     result.innerHTML = answer;
-//     return;
-//   }
-// }
-
-// clear.addEventListener("click", clearInput);
-keys.forEach(val => {
+keys.forEach((val) => {
   val.addEventListener("click", handleKeyPress);
   val.addEventListener("click", evaluate);
 });
